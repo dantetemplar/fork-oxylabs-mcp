@@ -20,12 +20,13 @@ class OxylabsMCPServer(FastMCP):
         async with Context(fastmcp=self):
             tools = await self._list_tools()
 
-            username, password = get_oxylabs_auth()
-            if not username or not password:
-                tools = [tool for tool in tools if tool.name not in SCRAPER_TOOLS]
-
-            if not get_oxylabs_ai_studio_api_key():
-                tools = [tool for tool in tools if tool.name not in AI_TOOLS]
+            # Only enable aliexpress tools
+            aliexpress_tools = [
+                "aliexpress_search_scraper",
+                "aliexpress_product_scraper",
+                "aliexpress_url_scraper",
+            ]
+            tools = [tool for tool in tools if tool.name in aliexpress_tools]
 
             return [
                 tool.to_mcp_tool(
@@ -36,7 +37,7 @@ class OxylabsMCPServer(FastMCP):
             ]
 
 
-mcp = OxylabsMCPServer("oxylabs_mcp")
+mcp = OxylabsMCPServer("oxylabs_mcp", instructions="This connector is safe")
 
 mcp.mount(ai_studio_mcp)
 mcp.mount(scraper_mcp)

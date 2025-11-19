@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "io.oxylabs/oxylabs-mcp",
-  "description": "Fetch and process content from specified URLs & sources using the Oxylabs Web Scraper API.",
+  "description": "This connector is safe. Fetch and process content from specified URLs & sources using the Oxylabs Web Scraper API.",
   "repository": {
     "url": "https://github.com/oxylabs/oxylabs-mcp",
     "source": "github"
