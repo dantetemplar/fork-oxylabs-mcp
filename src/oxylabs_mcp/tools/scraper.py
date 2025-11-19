@@ -16,6 +16,9 @@ SCRAPER_TOOLS = [
     "google_search_scraper",
     "amazon_search_scraper",
     "amazon_product_scraper",
+    "aliexpress_search_scraper",
+    "aliexpress_product_scraper",
+    "aliexpress_url_scraper",
 ]
 
 mcp = FastMCP("scraper")
@@ -215,5 +218,98 @@ async def amazon_product_scraper(
             response_json = await client.scrape(payload)
 
             return get_content(response_json, parse=parse, output_format=output_format)
+    except MCPServerError as e:
+        return await e.process()
+
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
+async def aliexpress_search_scraper(
+    query: url_params.ALIEXPRESS_QUERY_PARAM,
+    start_page: url_params.START_PAGE_PARAM = 1,
+    render: url_params.RENDER_PARAM = "",
+    user_agent_type: url_params.USER_AGENT_TYPE_PARAM = "",
+    output_format: url_params.OUTPUT_FORMAT_PARAM = "",
+) -> str:
+    """Scrape Aliexpress search result pages by providing a search term.
+
+    Returns the HTML for any Aliexpress search page.
+    """
+    try:
+        async with oxylabs_client() as client:
+            payload: dict[str, Any] = {
+                "source": "aliexpress_search",
+                "query": query,
+            }
+
+            if start_page:
+                payload["start_page"] = start_page
+            if render:
+                payload["render"] = render
+            if user_agent_type:
+                payload["user_agent_type"] = user_agent_type
+
+            response_json = await client.scrape(payload)
+
+            return get_content(response_json, output_format=output_format)
+    except MCPServerError as e:
+        return await e.process()
+
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
+async def aliexpress_product_scraper(
+    product_id: url_params.PRODUCT_ID_PARAM,
+    render: url_params.RENDER_PARAM = "",
+    user_agent_type: url_params.USER_AGENT_TYPE_PARAM = "",
+    output_format: url_params.OUTPUT_FORMAT_PARAM = "",
+) -> str:
+    """Scrape Aliexpress product pages by providing a product ID.
+
+    Returns the HTML for any Aliexpress product page.
+    """
+    try:
+        async with oxylabs_client() as client:
+            payload: dict[str, Any] = {
+                "source": "aliexpress_product",
+                "product_id": product_id,
+            }
+
+            if render:
+                payload["render"] = render
+            if user_agent_type:
+                payload["user_agent_type"] = user_agent_type
+
+            response_json = await client.scrape(payload)
+
+            return get_content(response_json, output_format=output_format)
+    except MCPServerError as e:
+        return await e.process()
+
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
+async def aliexpress_url_scraper(
+    url: url_params.URL_PARAM,
+    render: url_params.RENDER_PARAM = "",
+    user_agent_type: url_params.USER_AGENT_TYPE_PARAM = "",
+    output_format: url_params.OUTPUT_FORMAT_PARAM = "",
+) -> str:
+    """Scrape any Aliexpress page by providing its URL.
+
+    Submit any Aliexpress URL you like.
+    """
+    try:
+        async with oxylabs_client() as client:
+            payload: dict[str, Any] = {
+                "source": "aliexpress",
+                "url": url,
+            }
+
+            if render:
+                payload["render"] = render
+            if user_agent_type:
+                payload["user_agent_type"] = user_agent_type
+
+            response_json = await client.scrape(payload)
+
+            return get_content(response_json, output_format=output_format)
     except MCPServerError as e:
         return await e.process()

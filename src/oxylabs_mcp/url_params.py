@@ -147,3 +147,5 @@ AUTOSELECT_VARIANT_CONTEXT_PARAM = Annotated[
         description="To get accurate pricing/buybox data, set this parameter to true.",
     ),
 ]
+ALIEXPRESS_QUERY_PARAM = Annotated[str, Field(description="The keyword or phrase to search for products.")]
+PRODUCT_ID_PARAM = Annotated[str, Field(description="Product ID of the product to scrape.")]
